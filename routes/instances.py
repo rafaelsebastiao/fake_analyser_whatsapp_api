@@ -36,3 +36,5 @@ async def get_qrcode(
     response = await connect_instance(name=instance_name, client=client)
 
     return response.json()
+
+    

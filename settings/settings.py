@@ -5,6 +5,7 @@ class Settings(BaseSettings):
         env_file='.env', env_file_encoding='utf-8'
     )
 
+    OWN_API_URL : str
     EVOLUTION_API_URL:str 
     EVOLUTION_AUTHENTICATION_API_KEY : str
     DATABASE_URL:str 

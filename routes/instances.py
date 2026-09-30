@@ -4,6 +4,8 @@ from dependencies.http import get_http_client
 
 from services.evolution.instances import find_instances, create_instance, connect_instance
 
+from services.evolution.webhooks import get_webhook, create_webhook
+
 
 router = APIRouter(
     prefix='/instances',
@@ -34,6 +36,14 @@ async def get_qrcode(
 
     # Realiza a conexão da instância
     response = await connect_instance(name=instance_name, client=client)
+
+    # Verificação se existe ou não o webhook
+    webhook_response = await get_webhook(instance_name=instance_name, client=client)
+
+    #Se não existe webhook associado a instância, deve ser criado um
+    if webhook_response.json() == None:
+        create_webhook(instance_name=instance_name, client=client)
+    
 
     return response.json()
 

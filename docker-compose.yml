@@ -1,0 +1,20 @@
+services:
+  fake-analyser-api:
+    build: .
+    container_name: fake-analyser-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    # Desenvolvimento: código montado do host + hot reload.
+    # Para produção, remova o volume e o "command" (vale o CMD do Dockerfile).
+    volumes:
+      - .:/app
+    command: uvicorn fake_analyser_api.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - fake-analyser-net
+
+networks:
+  fake-analyser-net:
+    external: true

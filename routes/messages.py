@@ -1,12 +1,14 @@
 from requests import get, post, exceptions
 
-from http import HTTPStatus
-
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, BackgroundTasks
 
 from fastapi.requests import Request
 
 from fastapi.exceptions import HTTPException
+
+from dependencies.http import get_http_client
+
+from services.handlers.messages import handle_connection_update
 
 from settings.settings import Settings
 
@@ -20,11 +22,19 @@ router = APIRouter(
     tags = ['messages']
 )
 
+
 @router.post('/new-message/')
-async def post_message(request: Request):
+async def webhook(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    client = Depends(get_http_client)
+    ):
+
     payload = await request.json()
-    print(payload)
-    return {"ok": True}
+    event = payload.get("event")
+
+    if event == "connection.update":
+        background_tasks.add_task(handle_connection_update, payload, client)
 
 
 @router.get('/messagesNotRead/')

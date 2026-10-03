@@ -59,25 +59,32 @@ apikey = Settings().EVOLUTION_AUTHENTICATION_API_KEY
 
 async def create_webhook(instance_name:str, client:AsyncClient):
     try:
+        print(f'{evolution_api_url}/webhook/set/{instance_name}')
+
+
         response = await client.post(
             url = f'{evolution_api_url}/webhook/set/{instance_name}',
             
             json={
-                "enabled": True,
-                "url": f"{own_api_url}/messages/new-message",
-                "events": [
-                "MESSAGES_UPSERT"
-                ],
-                "headers": {
-                    "apikey": apikey
-                },
-                "base64": True
+                "webhook" : {
+                    "enabled": True,
+                    "url": f"{own_api_url}/messages/new-message/",
+                    "events": [
+                    "MESSAGES_UPSERT", "CONNECTION_UPDATE"
+                    ],
+                    
+                    "headers": {
+                        "apikey": apikey
+                        },
+                    "base64": True
+                }
+               
             },
 
             headers={
                 "apikey": apikey
             },
-            timeout=5
+            timeout=30
         )
 
     except _exceptions.ConnectError as errc:
@@ -85,7 +92,7 @@ async def create_webhook(instance_name:str, client:AsyncClient):
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR, 
             detail=f"Connection error: The Whatsapp's endpoint is inaccessible or down!\n"
             )
-    
+            
     verify_status_http(response)
     return response
 

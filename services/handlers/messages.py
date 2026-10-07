@@ -26,6 +26,9 @@ async def handle_connection_update(payload: dict, client):
 
     phone_number = await get_phone_number(instanceName=instance_name, client=client)    
 
+
+    if phone_number == "":
+        ...
     
     await send_text_message(
         instance_name=instance_name, 

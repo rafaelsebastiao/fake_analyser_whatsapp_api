@@ -70,7 +70,7 @@ async def create_webhook(instance_name:str, client:AsyncClient):
                     "enabled": True,
                     "url": f"{own_api_url}/messages/new-message/",
                     "events": [
-                    "MESSAGES_UPSERT", "CONNECTION_UPDATE"
+                    "MESSAGES_UPSERT"
                     ],
                     
                     "headers": {
